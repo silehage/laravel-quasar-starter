@@ -3,9 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -21,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id'
     ];
 
     /**
@@ -44,5 +48,31 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+     public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+    public static function permissions()
+    {
+        $userId = Auth::check() ? Auth::id() : null;
+        
+        if ($userId) {
+            if($userId == 1) {
+                return ['can-all'];
+            }
+            return Cache::remember('user_permissions_' . $userId, now()->addMinute(), function () use ($userId) {
+                $data = DB::table('permissions')
+                    ->join('permission_role', 'permission_role.permission_id', 'permissions.id')
+                    ->join('roles', 'roles.id', 'permission_role.role_id')
+                    ->join('users', 'users.role_id', 'roles.id')
+                    ->where('users.id', $userId)
+                    ->get()->pluck('name')->toArray();
+
+                return $data;
+            });
+        }
+
+        return [];
     }
 }

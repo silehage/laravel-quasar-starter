@@ -85,6 +85,9 @@ import { ref } from 'vue'
 import { dashboard, logout } from '@/routes';
 import { router, Link, usePage } from '@inertiajs/vue3';
 import { useQuasar } from 'quasar';
+import accounts from '@/routes/accounts';
+import roles from '@/routes/roles';
+import permissions from '@/routes/permissions';
 
 const $q = useQuasar()
 
@@ -120,6 +123,30 @@ const navigations = [
     title: 'Dashboard',
     href: dashboard(),
     icon: 'dashboard',
+    ability: 'All',
+    visible: true,
+    items: []
+  },
+   {
+    title: 'Users',
+    href: accounts.index(),
+    icon: 'groups',
+    ability: 'All',
+    visible: true,
+    items: []
+  },
+  {
+    title: 'Roles',
+    href: roles.index(),
+    icon: 'groups',
+    ability: 'All',
+    visible: true,
+    items: []
+  },
+  {
+    title: 'Permissions',
+    href: permissions.index(),
+    icon: 'groups',
     ability: 'All',
     visible: true,
     items: []

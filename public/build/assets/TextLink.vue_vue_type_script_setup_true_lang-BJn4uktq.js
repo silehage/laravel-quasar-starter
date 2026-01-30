@@ -1,0 +1,1 @@
+import{aj as t,i as n,w as s,aC as o,G as d,aD as r,o as f}from"./app-BdJWru13.js";const l=t({__name:"TextLink",props:{href:{},tabindex:{},method:{},as:{}},setup(e){return(a,i)=>(f(),n(d(r),{href:e.href,tabindex:e.tabindex,method:e.method,as:e.as,class:""},{default:s(()=>[o(a.$slots,"default")]),_:3},8,["href","tabindex","method","as"]))}});export{l as _};
