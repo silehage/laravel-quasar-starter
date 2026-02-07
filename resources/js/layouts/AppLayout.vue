@@ -1,12 +1,12 @@
 <template>
-  <q-layout view="lhh LpR lff" class="dashboard bg-grey-2 text-grey-10">
+  <q-layout view="lhh LpR lff" class="dashboard">
 
-    <q-header class="q-pa-md bg-transparent">
-      <q-toolbar class="bg-white box-shadow text-dark rounded-borders">
+    <q-header>
+      <q-toolbar class="bg-white box-shadow text-dark">
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <Link href="/" class="text-dark">
-          {{ usePage().props.name }}
+            {{ usePage().props.name }}
           </Link>
         </q-toolbar-title>
 
@@ -25,29 +25,45 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" :mini="is_mini" :width="210" class="bg-grey-2">
-      <q-list class="q-py-md">
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" :mini="is_mini" :width="190" dark class="bg-grey-9">
+      <q-list>
+        <q-item header>Navigation</q-item>
         <template v-for="(nav, idx) in navigations" :key="idx">
-          <q-expansion-item :label="nav.title" v-if="nav.items && nav.items.length > 0" default-opened>
-            <template v-for="(navItem, i) in nav.items" :key="i">
-             <q-item v-if="navItem.visible" clickable :href="navItem.href.url" @click.prevent="handleClickMenu(navItem.href)">
+          <q-expansion-item v-if="nav.items && nav.items.length > 0" default-opened>
+
+            <template v-slot:header>
               <q-item-section side>
-                <q-icon :name="navItem.icon"></q-icon>
+                <q-icon :name="nav.icon" color="grey-4"></q-icon>
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ navItem.title }}</q-item-label>
+                <q-item-label>{{ nav.title }}</q-item-label>
               </q-item-section>
               <q-tooltip v-if="is_mini" anchor="center right" self="center left" :offset="[10, 10]"
-                class="bg-purple text-white">{{ navItem.title }}</q-tooltip>
+                class="bg-purple text-white">{{ nav.title }}</q-tooltip>
 
-            </q-item>
             </template>
+            <q-list>
+              <template v-for="(navItem, i) in nav.items" :key="i">
+                <q-item v-if="navItem.visible" clickable :href="navItem.href.url"
+                  @click.prevent="handleClickMenu(navItem.href)">
+                  <q-item-section side class="text-grey-6">
+                    <q-icon name="remove" ></q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ navItem.title }}</q-item-label>
+                  </q-item-section>
+                  <q-tooltip v-if="is_mini" anchor="center right" self="center left" :offset="[10, 10]"
+                    class="bg-purple text-white">{{ navItem.title }}</q-tooltip>
+
+                </q-item>
+              </template>
+            </q-list>
           </q-expansion-item>
           <template v-else>
 
             <q-item v-if="nav.visible" clickable :href="nav.href.url" @click.prevent="handleClickMenu(nav.href)">
               <q-item-section side>
-                <q-icon :name="nav.icon"></q-icon>
+                <q-icon :name="nav.icon" color="grey-4"></q-icon>
               </q-item-section>
               <q-item-section>
                 <q-item-label>{{ nav.title }}</q-item-label>
@@ -127,30 +143,37 @@ const navigations = [
     visible: true,
     items: []
   },
-   {
+  {
     title: 'Users',
-    href: accounts.index(),
     icon: 'groups',
     ability: 'All',
     visible: true,
-    items: []
+    items: [
+      {
+        title: 'Users',
+        href: accounts.index(),
+        icon: 'groups',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Roles',
+        href: roles.index(),
+        icon: 'groups',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Permissions',
+        href: permissions.index(),
+        icon: 'groups',
+        ability: 'All',
+        visible: true,
+      },
+    ]
   },
-  {
-    title: 'Roles',
-    href: roles.index(),
-    icon: 'groups',
-    ability: 'All',
-    visible: true,
-    items: []
-  },
-  {
-    title: 'Permissions',
-    href: permissions.index(),
-    icon: 'groups',
-    ability: 'All',
-    visible: true,
-    items: []
-  },
+
+
 
 ]
 

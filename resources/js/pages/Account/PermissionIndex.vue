@@ -41,7 +41,7 @@ const filtered_data = computed(() => {
 
 <template>
    <div>
-      <AppHeader title="Assign Permissions"></AppHeader>
+      <AppHeader title="Permissions"></AppHeader>
 
       <q-card class="section q-mt-md" flat>
          <q-card-section>
