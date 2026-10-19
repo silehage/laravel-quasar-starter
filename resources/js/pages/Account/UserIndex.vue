@@ -48,9 +48,7 @@ const formAction = computed(() => {
       </div>
    </AppHeader>
 
-   <q-card class="section">
-      <q-card-section>
-
+   <div class="section">
          <div>
             <!-- <AppPagination v-bind="data"></AppPagination> -->
             <TableContainer>
@@ -81,8 +79,7 @@ const formAction = computed(() => {
             <AppPagination v-bind="data"></AppPagination>
 
          </div>
-      </q-card-section>
-   </q-card>
+   </div>
 
    <q-dialog v-model="modal">
       <q-card class="section card-lg">

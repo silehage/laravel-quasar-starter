@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUlids;
 
     /**
      * The attributes that are mass assignable.
@@ -49,25 +51,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-     public function role()
+    public function role()
     {
         return $this->belongsTo(Role::class);
     }
     public static function permissions()
     {
-        $userId = Auth::check() ? Auth::id() : null;
-        
-        if ($userId) {
-            if($userId == 1) {
+        $role = Auth::check() ? Auth::user()->role : null;
+
+        if ($role) {
+            if ($role->slug == 'super-admin') {
                 return ['can-all'];
             }
-            return Cache::remember('user_permissions_' . $userId, now()->addMinute(), function () use ($userId) {
+            return Cache::remember('user_permissions_' . $role->id, now()->addMinute(), function () use ($role) {
                 $data = DB::table('permissions')
+                    ->select('permissions.slug')
                     ->join('permission_role', 'permission_role.permission_id', 'permissions.id')
-                    ->join('roles', 'roles.id', 'permission_role.role_id')
-                    ->join('users', 'users.role_id', 'roles.id')
-                    ->where('users.id', $userId)
-                    ->get()->pluck('name')->toArray();
+                    ->where('permission_role.role_id', $role->id)
+                    ->get()->pluck('slug')->toArray();
 
                 return $data;
             });

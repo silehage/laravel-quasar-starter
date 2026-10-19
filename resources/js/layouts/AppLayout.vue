@@ -25,16 +25,26 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" :mini="is_mini" :width="190" dark class="bg-grey-9">
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" :mini="is_mini" :width="240" dark class="bg-grey-10">
       <q-list>
-        <q-item header>Navigation</q-item>
+        <q-item-label>
+          <div class="q-px-md q-mt-sm">
+            <q-select outlined dark label="Manufaktur" v-model:model-value="manufacturerId" 
+            :options="manufacturerList.map(e => ({label: e.name, value: e.id}))"
+              emit-value map-options @update:model-value="setCurrentId"></q-select>
+
+          </div>
+
+        </q-item-label>
+        <q-separator class="q-mt-md"></q-separator>
+        <!-- <q-item header>Navigation</q-item> -->
         <template v-for="(nav, idx) in navigations" :key="idx">
-          <q-expansion-item v-if="nav.items && nav.items.length > 0" default-opened>
+          <q-expansion-item v-if="nav.items && nav.items.length > 0" group="menu">
 
             <template v-slot:header>
-              <q-item-section side>
+              <!-- <q-item-section side>
                 <q-icon :name="nav.icon" color="grey-4"></q-icon>
-              </q-item-section>
+              </q-item-section> -->
               <q-item-section>
                 <q-item-label>{{ nav.title }}</q-item-label>
               </q-item-section>
@@ -47,7 +57,7 @@
                 <q-item v-if="navItem.visible" clickable :href="navItem.href.url"
                   @click.prevent="handleClickMenu(navItem.href)">
                   <q-item-section side class="text-grey-6">
-                    <q-icon name="remove" ></q-icon>
+                    <q-icon name="remove"></q-icon>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>{{ navItem.title }}</q-item-label>
@@ -62,9 +72,9 @@
           <template v-else>
 
             <q-item v-if="nav.visible" clickable :href="nav.href.url" @click.prevent="handleClickMenu(nav.href)">
-              <q-item-section side>
+              <!-- <q-item-section side>
                 <q-icon :name="nav.icon" color="grey-4"></q-icon>
-              </q-item-section>
+              </q-item-section> -->
               <q-item-section>
                 <q-item-label>{{ nav.title }}</q-item-label>
               </q-item-section>
@@ -79,7 +89,6 @@
 
     <q-page-container>
       <q-page padding class="bg-grey-2">
-        <FlashMessage></FlashMessage>
         <slot />
       </q-page>
     </q-page-container>
@@ -96,7 +105,6 @@
 </template>
 
 <script setup lang="ts">
-import FlashMessage from '@/components/FlashMessage.vue';
 import { ref } from 'vue'
 import { dashboard, logout } from '@/routes';
 import { router, Link, usePage } from '@inertiajs/vue3';
@@ -104,6 +112,15 @@ import { useQuasar } from 'quasar';
 import accounts from '@/routes/accounts';
 import roles from '@/routes/roles';
 import permissions from '@/routes/permissions';
+import master from '@/routes/master';
+import purchaseOrders from '@/routes/purchase-orders';
+import workflows from '@/routes/workflows';
+import manufacturer from '@/routes/manufacturer';
+import products from '@/routes/products';
+import productions from '@/routes/productions';
+import revision from '@/routes/revision';
+
+const { manufacturerId, manufacturerList } = usePage().props
 
 const $q = useQuasar()
 
@@ -127,6 +144,14 @@ const toggleLeftDrawer = () => {
   }
 }
 
+const setCurrentId = (manufacturerId: String) => {
+  router.post(manufacturer.setCurrent(manufacturerId), null, {
+    onFinish: () => {
+      location.reload()
+    }
+  })
+}
+
 const handleClickMenu = (href) => {
   if ($q.platform.is.mobile) {
     leftDrawerOpen.value = !leftDrawerOpen.value
@@ -142,6 +167,98 @@ const navigations = [
     ability: 'All',
     visible: true,
     items: []
+  },
+  {
+    title: 'Purchase Order',
+    icon: 'dashboard',
+    ability: 'All',
+    visible: true,
+    items: [
+      {
+        title: 'List',
+        href: purchaseOrders.index(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Detail',
+        href: purchaseOrders.detail(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Report',
+        href: purchaseOrders.report(),
+        ability: 'All',
+        visible: true,
+      },
+    ]
+  },
+  {
+    title: 'Production',
+    icon: 'dashboard',
+    ability: 'All',
+    visible: true,
+    items: [
+      {
+        title: 'Waiting List',
+        href: productions.waitingList(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Progress List',
+        href: productions.currentProcess(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Finishing Process',
+        href: productions.scanCurrentProcess(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Finished',
+        href: productions.readyToShip(),
+        ability: 'All',
+        visible: true,
+      },
+    ]
+  },
+  {
+    title: 'Revisi',
+    icon: 'dashboard',
+    ability: 'All',
+    visible: true,
+    items: [
+      {
+        title: 'Revision List',
+        href: revision.list(),
+        ability: 'All',
+        visible: true,
+      },
+    ]
+  },
+  {
+    title: 'Workflows',
+    icon: 'dashboard',
+    ability: 'All',
+    visible: true,
+    items: [
+      {
+        title: 'Category Config',
+        href: workflows.index(),
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Product Config',
+        href: products.index(),
+        ability: 'All',
+        visible: true,
+      },
+    ]
   },
   {
     title: 'Users',
@@ -170,6 +287,57 @@ const navigations = [
         ability: 'All',
         visible: true,
       },
+    ]
+  },
+  {
+    title: 'Master Data',
+    icon: 'folder',
+    ability: 'view-master-data',
+    visible: true,
+    items: [
+      {
+        title: 'Manufaktur',
+        href: master.manufacturer(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Factory',
+        href: master.factories(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Fulfillments',
+        href: master.fulfillments(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Product',
+        href: master.products(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Product Lines',
+        href: master.productLines(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+      {
+        title: 'Product Categories',
+        href: master.productCategories(),
+        icon: 'store',
+        ability: 'All',
+        visible: true,
+      },
+
     ]
   },
 

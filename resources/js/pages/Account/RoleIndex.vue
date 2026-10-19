@@ -43,36 +43,34 @@ const handleEdit = (item) => {
 <template>
    <div>
       <AppHeader title="Roles">
-          <q-btn color="primary" @click="handleAddRole">Add Role</q-btn>
+         <q-btn color="primary" @click="handleAddRole">Add Role</q-btn>
       </AppHeader>
 
-      <q-card class="section q-mt-md" flat>
-         <q-card-section>
-              <TableContainer>
-                  <thead>
-                     <tr>
-                        <th align="left">#</th>
-                        <th align="left">Name</th>
-                        <th align="right">Action</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr v-for="(item, index) in data" :key="index">
-                        <td>{{ index + 1 }}</td>
-                        <td>
-                           <div class="nowrap">
-                              {{ item.name }}
-                           </div>
-                        </td>
-                        <td class="q-gutter-xs no-wrap" align="right">
-                           <q-btn icon="edit" v-if="can('update-role')" size="9px" padding="6px" dense no-caps color="blue"
-                              @click="handleEdit(item)"></q-btn color="blue">
-                        </td>
-                     </tr>
-                  </tbody>
-              </TableContainer>
-         </q-card-section>
-      </q-card>
+      <div class="section q-mt-md" flat>
+         <TableContainer>
+            <thead>
+               <tr>
+                  <th align="left">#</th>
+                  <th align="left">Name</th>
+                  <th align="right">Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="(item, index) in data" :key="index">
+                  <td>{{ index + 1 }}</td>
+                  <td>
+                     <div class="nowrap">
+                        {{ item.name }}
+                     </div>
+                  </td>
+                  <td class="q-gutter-xs no-wrap" align="right">
+                     <q-btn icon="edit" v-if="can('update-role')" size="9px" padding="6px" dense no-caps color="blue"
+                        @click="handleEdit(item)"></q-btn color="blue">
+                  </td>
+               </tr>
+            </tbody>
+         </TableContainer>
+      </div>
       <q-dialog v-model="modal">
          <q-card class="card-md section">
             <q-card-section>

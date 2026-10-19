@@ -1,0 +1,1 @@
+import{z as t,o as n,g as s,w as o,U as d,l as r,V as f}from"./app-BOT2-5lr.js";const l=t({__name:"TextLink",props:{href:{},tabindex:{},method:{},as:{}},setup(e){return(a,h)=>(n(),s(r(f),{href:e.href,tabindex:e.tabindex,method:e.method,as:e.as,class:""},{default:o(()=>[d(a.$slots,"default")]),_:3},8,["href","tabindex","method","as"]))}});export{l as _};

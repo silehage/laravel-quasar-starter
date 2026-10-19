@@ -43,8 +43,7 @@ const filtered_data = computed(() => {
    <div>
       <AppHeader title="Permissions"></AppHeader>
 
-      <q-card class="section q-mt-md" flat>
-         <q-card-section>
+      <div class="section q-mt-md" flat>
             <div class="q-mb-md q-gutter-sm">
                <q-btn unelevated size="13px" :color="filter == '' ? 'blue' : 'grey-6'" @click="filter = ''">ALL</q-btn>
                <q-btn v-for="module in modules" :key="module" unelevated size="13px"
@@ -73,8 +72,7 @@ const filtered_data = computed(() => {
                   </tr>
                </tbody>
             </TableContainer>
-         </q-card-section>
-      </q-card>
+      </div>
 
    </div>
 </template>

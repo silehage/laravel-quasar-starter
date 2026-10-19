@@ -1,15 +1,17 @@
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 
-import { Quasar, Dialog, Notify } from 'quasar'
+import { Quasar, Dialog, Notify, Loading } from 'quasar'
 
 import AuthLayout from './layouts/AuthLayout.vue';
 import AppLayout from './layouts/AppLayout.vue';
 import AppHeader from './components/Header.vue';
 import AppPagination from './components/Pagination.vue';
 import TableContainer from '@/components/TableContainer.vue';
+import InputNumber from './components/InputNumber.vue';
+import InputDate from './components/InputDate.vue';
 
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -30,23 +32,62 @@ createInertiaApp({
         }
 
         module.default.layout = module.default.layout || AppLayout
-        console.log(module);
         return module
     },
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
-             .use(Quasar, {
+            .use(Quasar, {
                 plugins: {
-                    Dialog, Notify
-                }, 
+                    Dialog, Notify, Loading
+                },
+                config: {
+                    lang: {
+                        noHtmlAttrs: true // Ini akan melarang Quasar mengubah tag <html lang="...">
+                    }
+                }
             })
             .component('AppHeader', AppHeader)
             .component('AppPagination', AppPagination)
             .component('TableContainer', TableContainer)
+            .component('InputNumber', InputNumber)
+            .component('InputDate', InputDate)
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#009b03',
     },
 });
+
+
+router.on('flash', (event) => {
+    if (event.detail.flash.success) {
+        Notify.create({
+            position: 'top',
+            type: 'positive',
+            message: event.detail.flash.success
+        })
+    }
+    if (event.detail.flash.message) {
+        Notify.create({
+            position: 'top',
+            type: 'positive',
+            message: event.detail.flash.message
+        })
+    }
+    if (event.detail.flash.error) {
+        Notify.create({
+            position: 'top',
+            type: 'negative',
+            message: event.detail.flash.error
+        })
+    }
+    if (event.detail.flash.warning) {
+        Notify.create({
+            position: 'top',
+            type: 'warning',
+            message: event.detail.flash.warning
+        })
+    }
+})
+

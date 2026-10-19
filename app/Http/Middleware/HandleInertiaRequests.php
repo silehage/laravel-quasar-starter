@@ -2,9 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Helper;
+use App\Models\Manufacturer;
 use App\Models\User;
-use Inertia\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,18 +39,27 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $currentUrl = URL::current();
+        $previousUrl = URL::previous();
+
+        if ($previousUrl && $previousUrl != $currentUrl) {
+            session(['inertia_prev_url' =>  $previousUrl]);
+        } else {
+            $previousUrl = session('inertia_prev_url');
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
-                 'permissions' => User::permissions(),
+                'permissions' => User::permissions(),
             ],
-             'flash' => [
-                'message' => $request->session()->get('message'),
-                'error' => $request->session()->get('error'),
-            ],
-            'query' => $request->query()
+            'query' => $request->query(),
+            'currentUrl' => $currentUrl,
+            'previousUrl' => $previousUrl,
+            'manufacturerId' => Helper::get_current(),
+            'manufacturerList' => Manufacturer::all(),
         ];
     }
 }

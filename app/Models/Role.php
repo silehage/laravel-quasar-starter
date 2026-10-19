@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Traits\HasSluggable;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    use HasSluggable;
+    use HasUlids, HasSluggable;
 
     protected $guarded = [];
 
@@ -19,5 +20,4 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
-
 }
